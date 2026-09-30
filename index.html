@@ -100,9 +100,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--flag);outline-offse
 .score span{font-family:var(--f-num);font-size:18px;color:var(--muted)}
 .zone{align-self:flex-start;font-size:14px;font-weight:700;padding:4px 12px;border-radius:999px;background:var(--turf-tint);color:var(--turf)}
 .rows{display:flex;flex-direction:column}
-.row{display:grid;grid-template-columns:7.5em 1fr 2.6em;gap:10px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--rule);font-size:14px}
+.row{display:grid;grid-template-columns:minmax(0,10.5em) 1fr 2.2em;gap:10px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--rule);font-size:14px}
 .row:last-child{border-bottom:0}
-.row .nm{display:flex;gap:6px;align-items:center;min-width:0}
+.row .nm{display:flex;gap:6px;align-items:center;min-width:0;white-space:nowrap;font-size:13px}
 .row .rk{flex:none;font-family:var(--f-num);font-size:11px;font-weight:600;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--flag);color:var(--card)}
 .bar{height:8px;border-radius:4px;background:var(--turf-tint);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--turf);border-radius:4px}
