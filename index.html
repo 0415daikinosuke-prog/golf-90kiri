@@ -131,6 +131,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offs
 .fallback[open]{gap:10px}
 .fallback pre{white-space:pre-wrap;word-break:break-all;font-family:var(--f-body);font-size:14px;background:var(--soft);border-radius:12px;padding:12px;margin:10px 0}
 .share{border:2px solid var(--rule);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.overlay{position:fixed;inset:0;background:rgba(19,42,29,.6);display:flex;align-items:flex-start;justify-content:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));overflow-y:auto;z-index:10}
+.sheet{background:var(--bg);border-radius:24px;padding:16px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px}
+.sheet img{width:100%;border-radius:14px;display:block;-webkit-touch-callout:default}
+.btn:disabled{opacity:.6}
 .disclaimer{font-size:13px;color:var(--sub);text-align:center}
 @media (prefers-reduced-motion:no-preference){
   .screen{animation:rise .3s ease-out}
@@ -274,8 +278,9 @@ function score(ans){
   else {
     let low = asc[0];
     // ショット再現力にはLステップのタイプがないので、2番目に低い領域のタイプを採用＋「大ミス要注意」
-    if(low.id==="shot"){ low = asc[1]; tags.unshift(SHOT_TAG); }
-    type = TYPE_BY_DOMAIN[low.id];
+    // ただし他の力がすべて80点以上なら、弱点は大ミスだけなのでリーチ型にする
+    if(low.id==="shot"){ tags.unshift(SHOT_TAG); low = asc[1]; }
+    type = (asc[0].id==="shot" && low.v>=80) ? "reach" : TYPE_BY_DOMAIN[low.id];
   }
   return {dom,total,top3,type,tags};
 }
@@ -341,6 +346,57 @@ async function copyText(text, btn){
   }
   if(btn){ const o=btn.textContent; btn.textContent= ok?"コピーしました":"長押しでコピーしてください"; setTimeout(()=>btn.textContent=o,2000); }
   return ok;
+}
+
+/* ---------- ストーリー用の結果画像（1080×1920） ---------- */
+async function makeStoryImage(r, T){
+  try{ await Promise.all([
+    document.fonts.load('800 80px "M PLUS Rounded 1c"'), document.fonts.load('700 40px "Noto Sans JP"'), document.fonts.load('400 40px "Noto Sans JP"')
+  ]); }catch(e){}
+  const W=1080, H=1920, c=document.createElement("canvas"); c.width=W; c.height=H;
+  const g=c.getContext("2d");
+  const R='"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif', B='"Noto Sans JP","Hiragino Sans",sans-serif';
+  const rr=(x,y,w,h,rad)=>{ g.beginPath(); g.moveTo(x+rad,y); g.arcTo(x+w,y,x+w,y+h,rad); g.arcTo(x+w,y+h,x,y+h,rad); g.arcTo(x,y+h,x,y,rad); g.arcTo(x,y,x+w,y,rad); g.closePath(); };
+  g.fillStyle="#f1f7ef"; g.fillRect(0,0,W,H);
+  g.fillStyle="#ffffff"; rr(70,220,940,1380,56); g.fill();
+  g.textAlign="center"; g.textBaseline="alphabetic";
+  g.fillStyle="#3d5446"; g.font=`700 44px ${B}`; g.fillText("90切り現在地診断", W/2, 330);
+  g.font=`800 300px ${R}`; const sw=g.measureText(String(r.total)).width; g.font=`800 64px ${R}`; const uw=g.measureText(" /100").width;
+  const sx=W/2-(sw+uw)/2; g.textAlign="left";
+  g.fillStyle="#0d5f33"; g.font=`800 300px ${R}`; g.fillText(String(r.total), sx, 640);
+  g.fillStyle="#3d5446"; g.font=`800 64px ${R}`; g.fillText(" /100", sx+sw, 640); g.textAlign="center";
+  const zone=zoneOf(r.total).replace(/^\S+\s/,""); g.font=`800 48px ${R}`; const zw=g.measureText(zone).width+80;
+  g.fillStyle="#a6dc1e"; rr(W/2-zw/2,690,zw,84,42); g.fill(); g.fillStyle="#132a1d"; g.fillText(zone, W/2, 748);
+  g.fillStyle="#178a4c"; g.font=`700 40px ${B}`; g.fillText("あなたのタイプ", W/2, 880);
+  g.fillStyle="#0d5f33"; let fs=84; g.font=`800 ${fs}px ${R}`; while(g.measureText(T.name).width>860 && fs>48){ fs-=4; g.font=`800 ${fs}px ${R}`; } g.fillText(T.name, W/2, 990);
+  g.strokeStyle="#dce7da"; g.lineWidth=4; g.beginPath(); g.moveTo(170,1060); g.lineTo(910,1060); g.stroke();
+  g.fillStyle="#3d5446"; g.font=`700 40px ${B}`; g.fillText("優先して改善したい3項目", W/2, 1150);
+  r.top3.forEach((d,i)=>{ const y=1200+i*120;
+    g.fillStyle="#fff3e0"; rr(170,y,740,96,30); g.fill();
+    g.textAlign="left"; g.fillStyle="#f08c00"; g.font=`800 56px ${R}`; g.fillText(String(i+1), 210, y+68);
+    g.fillStyle="#132a1d"; g.font=`700 46px ${B}`; g.fillText(d.name, 290, y+64);
+    g.textAlign="right"; g.font=`800 50px ${R}`; g.fillText(String(d.v), 870, y+66); g.textAlign="center"; });
+  g.fillStyle="#132a1d"; g.font=`800 56px ${R}`; g.fillText("あなたも9問で診断してみて⛳", W/2, 1700);
+  g.fillStyle="#3d5446"; g.font=`700 42px ${B}`; g.fillText("プロフィールのリンクから", W/2, 1775);
+  g.fillStyle="#178a4c"; g.font=`800 52px ${R}`; g.fillText(`@${CONFIG.instagram}`, W/2, 1845);
+  return await new Promise(res=>c.toBlob(res,"image/png"));
+}
+
+function showStory(blob){
+  const url=URL.createObjectURL(blob);
+  const file=new File([blob],"90kiri-result.png",{type:"image/png"});
+  const canShare = !!(navigator.canShare && navigator.canShare({files:[file]}));
+  const ov=document.createElement("div"); ov.className="overlay";
+  ov.innerHTML=`<div class="sheet">
+    <img src="${url}" alt="ストーリー用の診断結果画像">
+    ${canShare?`<button class="btn btn-primary" id="shareImg">画像をシェア・保存する</button>`:""}
+    <p class="small" style="text-align:center">${canShare?"共有画面から「画像を保存」またはインスタを選んでください":"画像を長押しして保存し、インスタのストーリーで使ってください"}</p>
+    <button class="btn btn-ghost" id="closeOv">閉じる</button></div>`;
+  document.body.appendChild(ov);
+  const close=()=>{ ov.remove(); URL.revokeObjectURL(url); };
+  ov.querySelector("#closeOv").onclick=close;
+  ov.addEventListener("click",e=>{ if(e.target===ov) close(); });
+  if(canShare) ov.querySelector("#shareImg").onclick=async()=>{ try{ await navigator.share({files:[file],title:"90切り現在地診断"}); track("story_image_share"); }catch(e){} };
 }
 
 function renderStart(){
@@ -482,7 +538,8 @@ function renderResult(){
 
   <section class="share">
     <h2 style="font-size:19px">ゴルフ仲間にも教える</h2>
-    <p class="small">結果をスクショしてストーリーで <b>@${CONFIG.instagram}</b> をタグ付けするか、診断のリンクを送ってあげてください。</p>
+    <p class="small">結果画像をストーリーに載せて <b>@${CONFIG.instagram}</b> をタグ付けするか、診断のリンクを送ってあげてください。</p>
+    <button class="btn btn-primary" id="storyBtn">ストーリー用の画像を作る</button>
     <button class="btn btn-ghost" id="shareBtn">診断のリンクを送る</button>
   </section>
 
@@ -497,6 +554,11 @@ function renderResult(){
     track("share_click",{type:plain});
     if(navigator.share){ try{ await navigator.share({title:"90切り現在地診断",text:shareText,url}); return; }catch(err){ if(err && err.name==="AbortError") return; } }
     copyText(`${shareText}\n${url}`, e.currentTarget);
+  };
+  document.getElementById("storyBtn").onclick=async e=>{
+    const b=e.currentTarget, o=b.textContent; b.textContent="画像を作っています…"; b.disabled=true;
+    try{ const blob=await makeStoryImage(r,T); if(blob){ showStory(blob); track("story_image_create",{type:plain}); } }
+    finally{ b.textContent=o; b.disabled=false; }
   };
   document.getElementById("again").onclick=startQuiz;
 }
