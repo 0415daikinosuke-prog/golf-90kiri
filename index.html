@@ -98,7 +98,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offs
 .zone{display:inline-block;background:var(--lime);color:var(--ink);font-weight:800;font-family:var(--f-round);font-size:16px;padding:5px 16px;border-radius:999px}
 .typecard{border:2px solid var(--green);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .typecard .label{font-weight:700;color:var(--green);font-size:14px}
-.typecard h2{font-size:27px;color:var(--green-d)}
+.typecard h2{font-size:clamp(20px,5.8vw,26px);color:var(--green-d);text-wrap:pretty}
 .bars{display:flex;flex-direction:column;gap:12px}
 .bar-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
 .bar-row .nm{display:flex;gap:8px;align-items:center;font-weight:700;font-size:16px;min-width:0}
@@ -418,7 +418,7 @@ function renderStart(){
     <ul class="gets">
       <li><div><b>90切り現在地スコア</b><span>今のゴルフを100点満点で採点</span></div></li>
       <li><div><b>優先して改善したい3項目</b><span>どこから直せば打数が減るか、順番つきで</span></div></li>
-      <li><div><b>あなたのゴルファータイプ</b><span>6タイプから判定。次のラウンドでやることも</span></div></li>
+      <li><div><b>あなたのゴルファータイプ</b><span>6タイプから判定。次にやることもわかります</span></div></li>
     </ul>
   </section>
 
