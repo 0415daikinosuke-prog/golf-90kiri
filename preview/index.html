@@ -269,7 +269,7 @@ let ans = [];
 let cur = 0;
 
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const top = ()=>`<header class="top"><b>90切り現在地診断</b><a href="https://www.instagram.com/${CONFIG.instagram}/" target="_blank" rel="noopener">@${CONFIG.instagram}</a></header>`;
+const topBar = ()=>`<header class="top"><b>90切り現在地診断</b><a href="https://www.instagram.com/${CONFIG.instagram}/" target="_blank" rel="noopener">@${CONFIG.instagram}</a></header>`;
 const barRow = (name,v,rank)=>`
   <div class="bar-row${rank?" pri":""}">
     <span class="nm">${rank?`<span class="rk">${rank}</span>`:""}<span>${name}</span></span>
@@ -279,7 +279,7 @@ const barRow = (name,v,rank)=>`
 const start = ()=>{ans=[];cur=0;renderQ();window.scrollTo(0,0);};
 
 function renderStart(){
-  app.innerHTML = `${top()}
+  app.innerHTML = `${topBar()}
   <section class="screen hero">
     <h1>あなたが<span class="hl">90</span>を切れない理由、どこにある？</h1>
     <p class="lead">9つの質問に答えるだけで、今いちばん伸ばすべき力がわかります。</p>
@@ -312,7 +312,7 @@ function renderStart(){
 
 function renderQ(){
   const q = Q[cur];
-  app.innerHTML = `${top()}
+  app.innerHTML = `${topBar()}
   <section class="screen section" aria-live="polite">
     <div class="progress">
       <div class="meta"><span><b>Q${cur+1}</b> / 9</span><span>${cur+1}番ホール</span></div>
@@ -344,7 +344,7 @@ function renderResult(){
     + (r.tags.length?`\n気をつけたい傾向：${r.tags.map(t=>t.name).join("・")}`:"");
   const addUrl = `https://line.me/R/ti/p/${encodeURIComponent(CONFIG.lineId)}`;
   const sendUrl = `https://line.me/R/oaMessage/${encodeURIComponent(CONFIG.lineId)}/?${encodeURIComponent(msg)}`;
-  app.innerHTML = `${top()}
+  app.innerHTML = `${topBar()}
   <section class="screen scorehero">
     <span class="label">あなたの90切り現在地</span>
     <div class="big"><b>${r.total}</b><span>/ 100</span></div>
