@@ -5,12 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="9つの質問で、90切りの現在地スコア・優先して改善したい3項目・あなたのゴルファータイプがわかる無料診断。">
 <meta property="og:title" content="90切り現在地診断｜あなたが90を切れない理由、どこにある？">
-<meta property="og:description" content="9問・約2分。90切り現在地スコア、優先して改善したい3項目、ゴルファータイプがわかります。">
+<meta property="og:description" content="9問・約2分・無料。90切り現在地スコア、優先して改善したい3項目、ゴルファータイプがわかります。">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://0415daikinosuke-prog.github.io/golf-90kiri/">
+<meta property="og:image" content="https://0415daikinosuke-prog.github.io/golf-90kiri/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#178a4c">
 <style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>90切り現在地診断</title>
 <meta name="color-scheme" content="light">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap">
@@ -117,6 +124,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offs
 .gets2 b{color:#04a045}
 .step{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px}
 .step a{flex:none;color:#04a045;font-weight:700;background:var(--card);border-radius:999px;padding:8px 16px;text-decoration:none;border:2px solid #bdebcd}
+.resume{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 18px;border:2px solid var(--green);background:var(--soft);border-radius:18px;font-weight:700;color:var(--green-d);text-align:left}
+.resume b{font-family:var(--f-round);font-size:20px}
+.fallback{background:var(--card);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.fallback summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--sub)}
+.fallback[open]{gap:10px}
+.fallback pre{white-space:pre-wrap;word-break:break-all;font-family:var(--f-body);font-size:14px;background:var(--soft);border-radius:12px;padding:12px;margin:10px 0}
+.share{border:2px solid var(--rule);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .disclaimer{font-size:13px;color:var(--sub);text-align:center}
 @media (prefers-reduced-motion:no-preference){
   .screen{animation:rise .3s ease-out}
@@ -136,7 +150,9 @@ const CONFIG = {
   // LINE公式アカウントのベーシックID
   lineId: "@966ksyhp",
   // 結果ボタンで送るメッセージの先頭。Lステップの自動応答は「アプリ診断結果：◯◯型」の部分一致で反応する。
-  keywordPrefix: "アプリ診断結果："
+  keywordPrefix: "アプリ診断結果：",
+  // Googleアナリティクス4の測定ID（例 "G-XXXXXXXXXX"）。空なら計測しない
+  gaId: ""
 };
 
 /* ---------- 6領域と重み（総合100点の計算用。ユーザーには見せない） ---------- */
@@ -263,6 +279,30 @@ function score(ans){
   }
   return {dom,total,top3,type,tags};
 }
+/* ---------- 計測・流入元・保存 ---------- */
+// どの投稿から来たか：リンクを https://…/golf-90kiri/?src=reel1012 のようにすると、LINEに送る結果に「流入：reel1012」が付く
+// 一度付いた流入元は、あとで開き直しても残す
+const SRC = (()=>{
+  const ok = v=>/^[\w\-]{1,30}$/.test(v||"");
+  try{ const v=new URLSearchParams(location.search).get("src"); if(ok(v)){ try{ localStorage.setItem("golf90_src",v); }catch(e){} return v; } }catch(e){}
+  try{ const v=localStorage.getItem("golf90_src"); if(ok(v)) return v; }catch(e){}
+  return "";
+})();
+const APP_URL = location.origin + location.pathname;
+
+function track(name, params={}){
+  try{ if(window.gtag) window.gtag("event", name, {...params, src: SRC||"(none)"}); }catch(e){}
+}
+if(CONFIG.gaId){
+  const s=document.createElement("script"); s.async=true; s.src=`https://www.googletagmanager.com/gtag/js?id=${CONFIG.gaId}`; document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments)}; gtag("js",new Date()); gtag("config",CONFIG.gaId);
+}
+
+const STORE_KEY="golf90_state_v1";
+const save = ()=>{ try{ localStorage.setItem(STORE_KEY, JSON.stringify({ans,cur,at:Date.now()})); }catch(e){} };
+const load = ()=>{ try{ const s=JSON.parse(localStorage.getItem(STORE_KEY)||"null"); if(s&&Array.isArray(s.ans)&&Date.now()-s.at<1000*60*60*24*30) return s; }catch(e){} return null; };
+const clearSave = ()=>{ try{ localStorage.removeItem(STORE_KEY); }catch(e){} };
+
 /* ---------- 画面 ---------- */
 const app = document.getElementById("app");
 let ans = [];
@@ -276,10 +316,40 @@ const barRow = (name,v,rank)=>`
     <span class="v">${v}</span>
     <span class="track"><i style="width:${v}%"></i></span>
   </div>`;
-const start = ()=>{ans=[];cur=0;renderQ();window.scrollTo(0,0);};
+
+// ブラウザの「戻る」で前の質問に戻れるようにする
+function go(screen, push=true){
+  if(push){ try{ history.pushState({screen,cur},""); }catch(e){} }
+  if(screen==="start") renderStart();
+  else if(screen==="q") renderQ();
+  else renderResult();
+  window.scrollTo(0,0);
+}
+window.addEventListener("popstate", e=>{
+  const s=e.state;
+  if(!s||s.screen==="start"){ go("start",false); return; }
+  if(s.screen==="q"){ cur=Math.min(s.cur, ans.length); go("q",false); return; }
+  if(s.screen==="r" && ans.length===Q.length){ go("r",false); return; }
+  go("start",false);
+});
+const startQuiz = ()=>{ ans=[]; cur=0; save(); track("quiz_start"); go("q"); };
+
+async function copyText(text, btn){
+  let ok=false;
+  try{ await navigator.clipboard.writeText(text); ok=true; }catch(e){
+    try{ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); ok=document.execCommand("copy"); ta.remove(); }catch(e2){}
+  }
+  if(btn){ const o=btn.textContent; btn.textContent= ok?"コピーしました":"長押しでコピーしてください"; setTimeout(()=>btn.textContent=o,2000); }
+  return ok;
+}
 
 function renderStart(){
+  const prev = load();
+  const hasResult = prev && prev.ans.length===Q.length;
+  const inProgress = prev && prev.ans.length>0 && prev.ans.length<Q.length;
   app.innerHTML = `${topBar()}
+  ${hasResult?`<button class="resume" id="resume"><span>前回の診断結果を見る</span><b>→</b></button>`:""}
+  ${inProgress?`<button class="resume" id="cont"><span>続きから再開する（Q${prev.ans.length+1}から）</span><b>→</b></button>`:""}
   <section class="screen hero">
     <h1>あなたが<span class="hl">90</span>を切れない理由、どこにある？</h1>
     <p class="lead">9つの質問に答えるだけで、今いちばん伸ばすべき力がわかります。</p>
@@ -306,8 +376,10 @@ function renderStart(){
 
   <button class="btn btn-primary" id="go2">無料で診断する</button>
   <p class="coach">ゴルフコーチ @${CONFIG.instagram} 監修</p>`;
-  document.getElementById("go").onclick=start;
-  document.getElementById("go2").onclick=start;
+  document.getElementById("go").onclick=startQuiz;
+  document.getElementById("go2").onclick=startQuiz;
+  if(hasResult) document.getElementById("resume").onclick=()=>{ ans=prev.ans; cur=Q.length; go("r"); };
+  if(inProgress) document.getElementById("cont").onclick=()=>{ ans=prev.ans; cur=prev.ans.length; go("q"); };
 }
 
 function renderQ(){
@@ -326,13 +398,19 @@ function renderQ(){
     <div class="qnav">${cur>0?`<button class="link" id="back">← 前の質問</button>`:`<button class="link" id="home">← トップへ</button>`}<span class="small">選ぶと次へ進みます</span></div>
   </section>`;
   requestAnimationFrame(()=>{const i=app.querySelector(".track i"); if(i) i.style.width=`${(cur+1)/Q.length*100}%`;});
+  let locked=false;
   app.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
-    ans[cur]=+b.dataset.i;
+    if(locked) return; locked=true;
+    ans[cur]=+b.dataset.i; ans.length=cur+1;
     b.classList.add("sel");
-    setTimeout(()=>{ cur++; cur<Q.length?renderQ():renderResult(); window.scrollTo(0,0); },200);
+    setTimeout(()=>{
+      cur++; save();
+      if(cur<Q.length) go("q");
+      else { track("quiz_complete"); go("r"); }
+    },200);
   });
-  const back=document.getElementById("back"); if(back) back.onclick=()=>{cur--;renderQ();};
-  const home=document.getElementById("home"); if(home) home.onclick=renderStart;
+  const back=document.getElementById("back"); if(back) back.onclick=()=>history.back();
+  const home=document.getElementById("home"); if(home) home.onclick=()=>go("start");
 }
 
 function renderResult(){
@@ -341,9 +419,11 @@ function renderResult(){
   const rank = id=>r.top3.findIndex(d=>d.id===id)+1;
   const plain = T.name.replace(/^\S+\s/,"");
   const msg = `${CONFIG.keywordPrefix}${plain}\nスコア：${r.total}点（${zoneOf(r.total).replace(/^\S+\s/,"")}）\n優先して改善したい3項目：${r.top3.map((d,i)=>"①②③"[i]+d.name).join(" ")}`
-    + (r.tags.length?`\n気をつけたい傾向：${r.tags.map(t=>t.name).join("・")}`:"");
+    + (r.tags.length?`\n気をつけたい傾向：${r.tags.map(t=>t.name).join("・")}`:"")
+    + (SRC?`\n流入：${SRC}`:"");
   const addUrl = `https://line.me/R/ti/p/${encodeURIComponent(CONFIG.lineId)}`;
   const sendUrl = `https://line.me/R/oaMessage/${encodeURIComponent(CONFIG.lineId)}/?${encodeURIComponent(msg)}`;
+  const shareText = `90切り現在地診断やってみたら「${plain}」で${r.total}点でした⛳ 9問・2分で無料でできます`;
   app.innerHTML = `${topBar()}
   <section class="screen scorehero">
     <span class="label">あなたの90切り現在地</span>
@@ -356,6 +436,8 @@ function renderResult(){
     <h2>${T.name}</h2>
     <p>${T.body}</p>
   </section>
+
+  <a class="btn btn-line" href="${esc(sendUrl)}" target="_blank" rel="noopener" data-cta="top">続きの解説をLINEで受け取る</a>
 
   <section class="section">
     <h2>6つの力のスコア</h2>
@@ -381,24 +463,49 @@ function renderResult(){
     <p class="small">${T.firstTail}</p>
   </section>
 
-  <section class="cta">
+  <section class="cta" id="line">
     <h2>続きはLINEで受け取れます</h2>
     <ul class="gets2">
       <li><b>すぐに</b>　${plain}の詳しい解説</li>
       <li><b>翌日</b>　個別アドバイス｜${ADVICE[r.type]}${r.type==="reach"?"":"の伸ばし方"}</li>
     </ul>
-    <div class="step"><span>まだ友だちでない方は先に追加</span><a href="${esc(addUrl)}" target="_blank" rel="noopener">友だち追加</a></div>
-    <a class="btn btn-line" href="${esc(sendUrl)}" target="_blank" rel="noopener">診断結果をLINEに送る</a>
+    <div class="step"><span>まだ友だちでない方は先に追加</span><a href="${esc(addUrl)}" target="_blank" rel="noopener" data-cta="add">友だち追加</a></div>
+    <a class="btn btn-line" href="${esc(sendUrl)}" target="_blank" rel="noopener" data-cta="bottom">診断結果をLINEに送る</a>
     <p class="small" style="text-align:center">トーク画面が開いたら、そのまま送信を押すだけ</p>
+    <details class="fallback">
+      <summary>メッセージが入力されていないときは</summary>
+      <p class="small">下の文章をコピーして、LINEのトーク画面に貼り付けて送信してください。</p>
+      <pre id="msgText">${esc(msg)}</pre>
+      <button class="btn btn-ghost" id="copyMsg">文章をコピーする</button>
+    </details>
   </section>
 
-  <p class="small" style="text-align:center">結果をスクショして、ストーリーで <b>@${CONFIG.instagram}</b> をタグ付けしてね</p>
+  <section class="share">
+    <h2 style="font-size:19px">ゴルフ仲間にも教える</h2>
+    <p class="small">結果をスクショしてストーリーで <b>@${CONFIG.instagram}</b> をタグ付けするか、診断のリンクを送ってあげてください。</p>
+    <button class="btn btn-ghost" id="shareBtn">診断のリンクを送る</button>
+  </section>
+
   <button class="btn btn-ghost" id="again">もう一度診断する</button>
   <p class="disclaimer">この診断は9問の自己申告による目安です。実際のスイングやラウンド内容までは反映されていません。</p>`;
-  document.getElementById("again").onclick=start;
+
+  track("result_view",{type:plain,score:r.total});
+  app.querySelectorAll("[data-cta]").forEach(a=>a.addEventListener("click",()=>track(a.dataset.cta==="add"?"line_add_click":"line_send_click",{type:plain,position:a.dataset.cta})));
+  document.getElementById("copyMsg").onclick=e=>{ copyText(msg,e.currentTarget); track("line_msg_copy",{type:plain}); };
+  document.getElementById("shareBtn").onclick=async e=>{
+    const url = APP_URL + "?src=share";
+    track("share_click",{type:plain});
+    if(navigator.share){ try{ await navigator.share({title:"90切り現在地診断",text:shareText,url}); return; }catch(err){ if(err && err.name==="AbortError") return; } }
+    copyText(`${shareText}\n${url}`, e.currentTarget);
+  };
+  document.getElementById("again").onclick=startQuiz;
 }
 
-renderStart();
+// 初期表示：途中のリロードでも続きから表示する
+(()=>{
+  try{ history.replaceState({screen:"start",cur:0},""); }catch(e){}
+  renderStart();
+})();
 </script>
 </body>
 </html>
