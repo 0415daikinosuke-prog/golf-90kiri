@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="9つの質問で、90切りの現在地スコア・優先して改善したい3項目・あなたのゴルファータイプがわかる無料診断。">
+<meta property="og:title" content="90切り現在地診断｜あなたが90を切れない理由、どこにある？">
+<meta property="og:description" content="9問・約2分。90切り現在地スコア、優先して改善したい3項目、ゴルファータイプがわかります。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#178a4c">
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>90切り現在地診断</title>
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: bright single-column phone app. Always light (deliberately single-theme): white ground, fairway green, lime only for the one thing to look at. */
+:root{
+  color-scheme: light;
+  --bg:#ffffff; --soft:#f1f7ef; --card:#ffffff; --ink:#132a1d; --sub:#3d5446; --rule:#dce7da;
+  --green:#178a4c; --green-d:#0d5f33; --on-green:#ffffff;
+  --lime:#a6dc1e; --lime-soft:#f0f9db; --amber:#f08c00; --amber-soft:#fff3e0;
+  --line-green:#06c755; --line-soft:#e8f9ee;
+  --f-round:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.75;padding-inline:16px;padding-block:12px 56px;-webkit-text-size-adjust:100%}
+.app{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{margin:0;text-wrap:balance;font-family:var(--f-round);font-weight:800;line-height:1.35}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+
+.top{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding-block:4px}
+.top b{font-family:var(--f-round);color:var(--green-d)}
+.top a{color:var(--sub);text-decoration:none}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:60px;padding:0 20px;border:0;border-radius:999px;font-family:var(--f-round);font-weight:800;font-size:19px;text-decoration:none;transition:transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--green);color:var(--on-green);box-shadow:0 6px 0 var(--green-d)}
+.btn-line{background:var(--line-green);color:#fff;box-shadow:0 6px 0 #04a045}
+.btn-ghost{background:var(--card);color:var(--green-d);border:2px solid var(--rule);min-height:52px;font-size:16px}
+.small{font-size:14px;color:var(--sub)}
+
+/* start */
+.hero{background:var(--soft);border-radius:28px;padding:28px 22px 26px;display:flex;flex-direction:column;gap:18px}
+.hero h1{font-size:clamp(30px,8.6vw,38px);color:var(--green-d)}
+.hero h1 .hl{background:linear-gradient(transparent 62%,var(--lime) 62%);padding:0 2px}
+.hero .lead{color:var(--sub);font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--card);border:1.5px solid var(--rule);border-radius:999px;padding:4px 14px;font-weight:700;font-size:15px}
+.chip b{font-family:var(--f-round);color:var(--green)}
+.section{display:flex;flex-direction:column;gap:14px}
+.section h2{font-size:21px}
+.gets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.gets li{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start}
+.gets li::before{content:"";width:30px;height:30px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat;margin-top:2px}
+.gets b{display:block;font-size:17px}
+.gets span{font-size:15px;color:var(--sub)}
+.preview{border:2px solid var(--rule);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;position:relative}
+.preview .tagline{position:absolute;top:-12px;left:18px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:2px 12px;border-radius:999px}
+.coach{display:flex;gap:12px;align-items:center;font-size:14px;color:var(--sub);justify-content:center}
+
+/* quiz */
+.progress{display:flex;flex-direction:column;gap:8px}
+.progress .meta{display:flex;justify-content:space-between;font-size:14px;color:var(--sub);font-weight:700}
+.progress .meta b{font-family:var(--f-round);color:var(--green);font-size:16px}
+.track{height:10px;border-radius:5px;background:var(--soft);overflow:hidden}
+.track i{display:block;height:100%;background:var(--green);border-radius:5px;transition:width .3s}
+.qtitle{font-size:23px;color:var(--ink)}
+.choices{display:flex;flex-direction:column;gap:12px}
+.choice{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:16px 16px;background:var(--card);border:2px solid var(--rule);border-radius:18px;line-height:1.6;font-size:17px;transition:border-color .15s,background .15s}
+.choice:hover{border-color:var(--green)}
+.choice.sel{border-color:var(--green);background:var(--soft)}
+.choice .k{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-round);font-weight:800;background:var(--soft);color:var(--green-d)}
+.choice.sel .k{background:var(--green);color:#fff}
+.choice span:last-child{min-width:0}
+.qnav{display:flex;justify-content:space-between;align-items:center}
+.link{background:none;border:0;color:var(--sub);font-size:15px;padding:8px 0;text-decoration:underline;text-underline-offset:4px}
+
+/* result */
+.scorehero{background:var(--soft);border-radius:28px;padding:24px 22px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.scorehero .label{font-weight:700;color:var(--sub);font-size:15px}
+.big{display:flex;align-items:baseline;gap:6px;font-family:var(--f-round)}
+.big b{font-size:84px;line-height:1.05;color:var(--green-d);font-variant-numeric:tabular-nums}
+.big span{font-size:22px;color:var(--sub);font-weight:800}
+.zone{display:inline-block;background:var(--lime);color:var(--ink);font-weight:800;font-family:var(--f-round);font-size:16px;padding:5px 16px;border-radius:999px}
+.typecard{border:2px solid var(--green);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.typecard .label{font-weight:700;color:var(--green);font-size:14px}
+.typecard h2{font-size:27px;color:var(--green-d)}
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.bar-row .nm{display:flex;gap:8px;align-items:center;font-weight:700;font-size:16px;min-width:0}
+.bar-row .v{font-family:var(--f-round);font-weight:800;font-size:18px;font-variant-numeric:tabular-nums}
+.bar-row .track{grid-column:1 / -1}
+.bar-row .track i{background:var(--green)}
+.bar-row.pri .track i{background:var(--amber)}
+.rk{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--amber);color:#fff;font-family:var(--f-round);font-size:13px}
+.top3{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.top3 li{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:18px;background:var(--amber-soft)}
+.top3 .n{font-family:var(--f-round);font-weight:800;font-size:24px;color:var(--amber);width:22px;text-align:center}
+.top3 .t{flex:1;font-weight:700;min-width:0}
+.top3 .s{font-family:var(--f-round);font-weight:800}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:14px;padding:4px 14px;border-radius:999px;background:var(--amber-soft);color:#a85d00;font-weight:700}
+.notes{display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--sub)}
+.todo{background:var(--lime-soft);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.todo ol{margin:0;padding-left:1.4em;font-weight:700;display:flex;flex-direction:column;gap:4px}
+.cta{background:var(--line-soft);border-radius:28px;padding:24px 20px;display:flex;flex-direction:column;gap:14px}
+.cta h2{font-size:22px}
+.gets2{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.gets2 li{background:var(--card);border-radius:14px;padding:10px 14px;font-size:15px}
+.gets2 b{color:#04a045}
+.step{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px}
+.step a{flex:none;color:#04a045;font-weight:700;background:var(--card);border-radius:999px;padding:8px 16px;text-decoration:none;border:2px solid #bdebcd}
+.disclaimer{font-size:13px;color:var(--sub);text-align:center}
+@media (prefers-reduced-motion:no-preference){
+  .screen{animation:rise .3s ease-out}
+  @keyframes rise{from{transform:translateY(8px)}to{transform:none}}
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+<script>
+/* ============================================================
+   設定（ここだけ書き換えればOK）
+   ============================================================ */
+const CONFIG = {
+  instagram: "daiki_coaching_golf",
+  // LINE公式アカウントのベーシックID
+  lineId: "@966ksyhp",
+  // 結果ボタンで送るメッセージの先頭。Lステップの自動応答は「アプリ診断結果：◯◯型」の部分一致で反応する。
+  keywordPrefix: "アプリ診断結果："
+};
+
+/* ---------- 6領域と重み（総合100点の計算用。ユーザーには見せない） ---------- */
+const DOMAINS = [
+  {id:"shot",     name:"ショット再現力",     w:.25},
+  {id:"short",    name:"ショートゲーム力",   w:.20},
+  {id:"practice", name:"練習設計力",         w:.17},
+  {id:"self",     name:"自己理解力",         w:.15},
+  {id:"course",   name:"実戦対応力",         w:.13},
+  {id:"judge",    name:"判断・マネジメント力", w:.10}
+];
+
+/* ---------- 9問（d = 加点先の領域、p = A〜Eの点数） ---------- */
+const Q = [
+  {d:"shot", t:"ラウンド中のショットで、一番近い状態は？", p:[10,8,4,1], c:[
+    "大きなダフリ・トップ・左右への大ミスはかなり少ない",
+    "ミスは出るが、次のショットが打てる範囲に収まることが多い",
+    "大きなミスが何度か出て、そこからスコアを崩すことがある",
+    "その日によってミスがバラバラで、自分でも予測できない"]},
+  {d:"self", t:"自分の基本的な球筋と、ミスしやすい方向を説明できますか？", p:[10,8,4,1], c:[
+    "基本球筋も、クラブごとの主なミス方向も把握している",
+    "基本球筋と、大まかなミス方向なら分かる",
+    "なんとなく分かるが、日によってかなり変わる",
+    "ほとんど分からない"]},
+  {d:"self", t:"自分のクラブの飛距離をどのくらい把握していますか？", p:[10,8,4,1], c:[
+    "ほぼ全番手のキャリーとトータルを把握している",
+    "主要な番手のキャリーは把握している",
+    "だいたいの飛距離だけ把握している",
+    "ほとんど把握していない"]},
+  {d:"course", t:"傾斜やラフから打つとき、一番近いのは？", p:[10,8,4,1], c:[
+    "ライを見て、出やすい球・ミス・飛距離の変化まで予測する",
+    "基本的な傾斜やラフなら、ある程度対応できる",
+    "打ち方は知っているが、コースでは対応できないことが多い",
+    "平らな場所とほぼ同じ感覚で打っている"]},
+  {d:"short", t:"直近3ラウンドの平均パット数は？", p:[10,8,5,2,3], c:[
+    "32以下","33〜36","37〜40","41以上","分からない・記録していない"]},
+  {d:"short", t:"30・50・70yd前後の距離をどう打っていますか？", p:[10,8,4,1], c:[
+    "距離ごとに自分なりの基準があり、打ち分けられる",
+    "大まかな距離なら打ち分けられる",
+    "振り幅は意識するが、距離が安定しない",
+    "ほぼ感覚で打っている"]},
+  {d:"judge", t:"グリーン右に池、ピンは右奥。普段ならどこを狙いますか？", p:[10,8,4,1], c:[
+    "自分の球筋・ミス幅を考えて、安全に残せる場所",
+    "基本的にグリーンセンター",
+    "池を避けながら、できるだけピン寄り",
+    "基本的にピン方向"]},
+  {d:"practice", t:"普段の練習で、一番近いものは？", p:[10,8,4,1], c:[
+    "前回のラウンドから課題を決め、コースを想定して練習する",
+    "その日の課題を決めてから練習する",
+    "YouTubeなどで気になった内容を試すことが多い",
+    "とりあえず球を打ちながら調子を確認することが多い"]},
+  {d:"course", t:"練習場では打てるのに、コースで同じ球が出ない日はどうしますか？", p:[10,8,4,1], c:[
+    "その日の球筋・ライ・ミス傾向を見て、攻略を変える",
+    "原因を確認して、小さく調整しながらプレーする",
+    "練習場のスイングに戻そうと、打ち方を修正する",
+    "何が悪いのか分からなくなり、いろいろ試す"]}
+];
+
+/* ---------- サブタグ（回答した瞬間に付くもの） ---------- */
+const SUBTAGS = [
+  {q:6, when:[2,3], name:"攻めすぎ傾向",     note:"ピンを狙う意識が強く、1回のミスで大きく打数を失いやすい傾向です。"},
+  {q:7, when:[2],   name:"情報迷子傾向",     note:"試す情報が多く、自分に必要な練習が絞れていない可能性があります。"},
+  {q:7, when:[3],   name:"目的なし練習傾向", note:"練習の目的が決まっておらず、球数のわりにスコアにつながりにくい状態です。"},
+  {q:8, when:[2,3], name:"コース対応要注意", note:"コースで崩れたとき、スイングで立て直そうとして傷口を広げやすい傾向です。"},
+  {q:2, when:[2,3], name:"飛距離把握不足",   note:"番手ごとの距離があいまいだと、狙いが合っていても届かない・オーバーが起きます。"},
+  {q:4, when:[4],   name:"パット数未把握",   note:"パット数が分かると、グリーン上で何打失っているかがはっきりします。"}
+];
+
+/* ---------- タイプ ---------- */
+const TYPES = {
+  reach:{name:"👑 90切りリーチ型", body:"大きな穴がなく、どの領域も一定のレベルにあります。ここからは新しい技術を足すより、1ラウンドで何となく失っている2〜3打を拾えるかどうかが90切りの分かれ目です。",
+    first:["ダボ以上を打ったホール","そのホールで最初にミスしたショット","ミスの原因（技術・判断・ライ）"],
+    firstLead:"次のラウンドで、この3つだけ記録してみてください。", firstTail:"原因が一番多かったものが、次に練習する1つです。"},
+  judge:{name:"🔥 攻めすぎゴルファー型", body:"打てる技術はあるのに、狙う場所の選び方で打数を失っているタイプです。ピンを狙った1打が池やバンカーにつかまり、ダボ・トリにつながる。スイングを変えなくても、狙いを変えるだけで縮まる打数があります。",
+    first:["ピンを直接狙ったショットの数","そのうちグリーンを外した数","外したあとにかかった打数"],
+    firstLead:"次のラウンドで、この3つだけ記録してみてください。", firstTail:"「攻めた結果、何打得して何打失ったか」が見えると、狙いどころが自然に変わります。"},
+  short:{name:"⛳ グリーン周り迷子型", body:"ティーショットやセカンドはそこそこ前に進むのに、グリーン周りで打数が積み上がっているタイプです。100yd以内で「3打かかっていたところを2打にする」だけで、90切りはぐっと近づきます。",
+    first:["パット数","100yd以内から上がるまでの打数","3パットの回数"],
+    firstLead:"次のラウンドで、この3つだけ記録してみてください。", firstTail:"ショットよりグリーン周りのほうが、短い期間で打数を減らしやすい領域です。"},
+  practice:{name:"🏌️‍♂️ 打ちっぱなし優等生型", body:"練習には通っているのに、その練習がラウンドの打数につながりきっていない状態です。球数を増やすより、練習の順番と目的を変えるほうが結果が出やすいタイプです。",
+    first:["一番打数を失ったホール","その原因になったショット","次の練習で試すこと1つ"],
+    firstLead:"次のラウンドのあと、この3つだけメモしてみてください。", firstTail:"練習の半分を、そのメモに書いた1つだけに使ってみてください。"},
+  self:{name:"🎯 感覚ゴルファー型", body:"「なんとなく打てる」一方で、自分の飛距離・ミス傾向・ラウンドで失っている打数がまだ整理されていない状態です。ここを整理すると、一気に練習の優先順位が見えてくる可能性があります。",
+    first:["番手別の実際の距離","ミスした方向","パット数"],
+    firstLead:"次のラウンドで、この3つだけ記録してみてください。", firstTail:"スイングを直す前に、まず「自分がどこで打数を失っているか」を知るところからです。"},
+  course:{name:"🏌️ 練習場シングル型", body:"練習場ではシングル並みにいい球が打てるのに、コースに出ると別人のようになるタイプです。原因は技術より、傾斜・ラフ・1球勝負といった「練習場にない条件」への慣れにある可能性が高いです。",
+    first:["傾斜・ラフから打った回数","そのうちミスになった回数","崩れた後に打ち方を変えたかどうか"],
+    firstLead:"次のラウンドで、この3つだけ記録してみてください。", firstTail:"練習場では、1球ごとにクラブと狙いを変える「ラウンド想定」の打ち方を取り入れるのがおすすめです。"}
+};
+// Lステップのテンプレートと1対1で対応：
+// タイプ → 「診断結果｜◯◯型」、 advice → 「個別アドバイス｜◯◯・要改善」
+const TYPE_BY_DOMAIN = {short:"short", practice:"practice", self:"self", course:"course", judge:"judge"};
+const ADVICE = {
+  reach:"90切りリーチ型", short:"ショートゲーム力", judge:"判断力",
+  self:"自己理解力", practice:"練習設計力", course:"実戦対応力"
+};
+const SHOT_TAG = {name:"大ミス要注意", note:"一番低いのはショット再現力でした。大きなミスを1つ減らすだけでも、スコアは目に見えて変わります。"};
+
+function zoneOf(s){
+  if(s>=80) return "🟢 90切りリーチゾーン";
+  if(s>=65) return "🟡 あと一歩ゾーン";
+  if(s>=50) return "🔍 弱点整理ゾーン";
+  return "🧱 土台づくりゾーン";
+}
+
+/* ---------- 採点 ---------- */
+function score(ans){
+  const sum={}, max={};
+  DOMAINS.forEach(d=>{sum[d.id]=0;max[d.id]=0});
+  Q.forEach((q,i)=>{ sum[q.d]+=q.p[ans[i]]; max[q.d]+=10; });
+  const dom = DOMAINS.map(d=>({...d, v:Math.round(sum[d.id]/max[d.id]*100)}));
+  const total = Math.round(dom.reduce((a,d)=>a+d.v*d.w,0));
+  // 低い順。同点なら重みが大きい（=スコアへの影響が大きい）方を優先
+  const asc = [...dom].sort((a,b)=>a.v-b.v || b.w-a.w);
+  const top3 = asc.slice(0,3);
+  const tags = SUBTAGS.filter(t=>t.when.includes(ans[t.q]));
+  let type;
+  if(total>=80 && dom.every(d=>d.v>=50)) type="reach";
+  else {
+    let low = asc[0];
+    // ショット再現力にはLステップのタイプがないので、2番目に低い領域のタイプを採用＋「大ミス要注意」
+    if(low.id==="shot"){ low = asc[1]; tags.unshift(SHOT_TAG); }
+    type = TYPE_BY_DOMAIN[low.id];
+  }
+  return {dom,total,top3,type,tags};
+}
+/* ---------- 画面 ---------- */
+const app = document.getElementById("app");
+let ans = [];
+let cur = 0;
+
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const top = ()=>`<header class="top"><b>90切り現在地診断</b><a href="https://www.instagram.com/${CONFIG.instagram}/" target="_blank" rel="noopener">@${CONFIG.instagram}</a></header>`;
+const barRow = (name,v,rank)=>`
+  <div class="bar-row${rank?" pri":""}">
+    <span class="nm">${rank?`<span class="rk">${rank}</span>`:""}<span>${name}</span></span>
+    <span class="v">${v}</span>
+    <span class="track"><i style="width:${v}%"></i></span>
+  </div>`;
+const start = ()=>{ans=[];cur=0;renderQ();window.scrollTo(0,0);};
+
+function renderStart(){
+  app.innerHTML = `${top()}
+  <section class="screen hero">
+    <h1>あなたが<span class="hl">90</span>を切れない理由、どこにある？</h1>
+    <p class="lead">9つの質問に答えるだけで、今いちばん伸ばすべき力がわかります。</p>
+    <div class="chips"><span class="chip"><b>9</b>問</span><span class="chip">約<b>2</b>分</span><span class="chip">無料</span></div>
+    <button class="btn btn-primary" id="go">診断をはじめる</button>
+  </section>
+
+  <section class="section">
+    <h2>診断でわかること</h2>
+    <ul class="gets">
+      <li><div><b>90切り現在地スコア</b><span>今のゴルフを100点満点で採点</span></div></li>
+      <li><div><b>優先して改善したい3項目</b><span>どこから直せば打数が減るか、順番つきで</span></div></li>
+      <li><div><b>あなたのゴルファータイプ</b><span>6タイプから判定。次のラウンドでやることも</span></div></li>
+    </ul>
+  </section>
+
+  <section class="preview" aria-label="結果画面のイメージ">
+    <span class="tagline">結果イメージ</span>
+    <div class="big" style="justify-content:center"><b style="font-size:56px">58</b><span>/ 100</span></div>
+    <div class="bars">
+      ${barRow("自己理解力",42,1)}${barRow("ショートゲーム力",48,2)}${barRow("実戦対応力",57,3)}
+    </div>
+  </section>
+
+  <button class="btn btn-primary" id="go2">無料で診断する</button>
+  <p class="coach">ゴルフコーチ @${CONFIG.instagram} 監修</p>`;
+  document.getElementById("go").onclick=start;
+  document.getElementById("go2").onclick=start;
+}
+
+function renderQ(){
+  const q = Q[cur];
+  app.innerHTML = `${top()}
+  <section class="screen section" aria-live="polite">
+    <div class="progress">
+      <div class="meta"><span><b>Q${cur+1}</b> / 9</span><span>${cur+1}番ホール</span></div>
+      <div class="track"><i style="width:${(cur)/Q.length*100}%"></i></div>
+    </div>
+    <h2 class="qtitle">${esc(q.t)}</h2>
+    <div class="choices">${q.c.map((c,i)=>`
+      <button class="choice${ans[cur]===i?" sel":""}" data-i="${i}" id="c${cur}-${i}">
+        <span class="k">${"ABCDE"[i]}</span><span>${esc(c)}</span></button>`).join("")}
+    </div>
+    <div class="qnav">${cur>0?`<button class="link" id="back">← 前の質問</button>`:`<button class="link" id="home">← トップへ</button>`}<span class="small">選ぶと次へ進みます</span></div>
+  </section>`;
+  requestAnimationFrame(()=>{const i=app.querySelector(".track i"); if(i) i.style.width=`${(cur+1)/Q.length*100}%`;});
+  app.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+    ans[cur]=+b.dataset.i;
+    b.classList.add("sel");
+    setTimeout(()=>{ cur++; cur<Q.length?renderQ():renderResult(); window.scrollTo(0,0); },200);
+  });
+  const back=document.getElementById("back"); if(back) back.onclick=()=>{cur--;renderQ();};
+  const home=document.getElementById("home"); if(home) home.onclick=renderStart;
+}
+
+function renderResult(){
+  const r = score(ans);
+  const T = TYPES[r.type];
+  const rank = id=>r.top3.findIndex(d=>d.id===id)+1;
+  const plain = T.name.replace(/^\S+\s/,"");
+  const msg = `${CONFIG.keywordPrefix}${plain}\nスコア：${r.total}点（${zoneOf(r.total).replace(/^\S+\s/,"")}）\n優先して改善したい3項目：${r.top3.map((d,i)=>"①②③"[i]+d.name).join(" ")}`
+    + (r.tags.length?`\n気をつけたい傾向：${r.tags.map(t=>t.name).join("・")}`:"");
+  const addUrl = `https://line.me/R/ti/p/${encodeURIComponent(CONFIG.lineId)}`;
+  const sendUrl = `https://line.me/R/oaMessage/${encodeURIComponent(CONFIG.lineId)}/?${encodeURIComponent(msg)}`;
+  app.innerHTML = `${top()}
+  <section class="screen scorehero">
+    <span class="label">あなたの90切り現在地</span>
+    <div class="big"><b>${r.total}</b><span>/ 100</span></div>
+    <span class="zone">${zoneOf(r.total)}</span>
+  </section>
+
+  <section class="typecard">
+    <span class="label">あなたのタイプ</span>
+    <h2>${T.name}</h2>
+    <p>${T.body}</p>
+  </section>
+
+  <section class="section">
+    <h2>6つの力のスコア</h2>
+    <div class="bars">${r.dom.map(d=>barRow(d.name,d.v,rank(d.id))).join("")}</div>
+    <p class="small">オレンジの番号が、優先して改善したい順番です</p>
+  </section>
+
+  <section class="section">
+    <h2>優先して改善したい3項目</h2>
+    <ol class="top3">${r.top3.map((d,i)=>`<li><span class="n">${i+1}</span><span class="t">${d.name}</span><span class="s">${d.v}</span></li>`).join("")}</ol>
+  </section>
+
+  ${r.tags.length?`<section class="section">
+    <h2>気をつけたい傾向</h2>
+    <div class="tags">${r.tags.map(t=>`<span class="tag">${t.name}</span>`).join("")}</div>
+    <div class="notes">${r.tags.map(t=>`<p><b>${t.name}：</b>${t.note}</p>`).join("")}</div>
+  </section>`:""}
+
+  <section class="todo">
+    <h2 style="font-size:20px">まず最初にやること</h2>
+    <p>${T.firstLead}</p>
+    <ol>${T.first.map(f=>`<li>${f}</li>`).join("")}</ol>
+    <p class="small">${T.firstTail}</p>
+  </section>
+
+  <section class="cta">
+    <h2>続きはLINEで受け取れます</h2>
+    <ul class="gets2">
+      <li><b>すぐに</b>　${plain}の詳しい解説</li>
+      <li><b>翌日</b>　個別アドバイス｜${ADVICE[r.type]}${r.type==="reach"?"":"の伸ばし方"}</li>
+    </ul>
+    <div class="step"><span>まだ友だちでない方は先に追加</span><a href="${esc(addUrl)}" target="_blank" rel="noopener">友だち追加</a></div>
+    <a class="btn btn-line" href="${esc(sendUrl)}" target="_blank" rel="noopener">診断結果をLINEに送る</a>
+    <p class="small" style="text-align:center">トーク画面が開いたら、そのまま送信を押すだけ</p>
+  </section>
+
+  <p class="small" style="text-align:center">結果をスクショして、ストーリーで <b>@${CONFIG.instagram}</b> をタグ付けしてね</p>
+  <button class="btn btn-ghost" id="again">もう一度診断する</button>
+  <p class="disclaimer">この診断は9問の自己申告による目安です。実際のスイングやラウンド内容までは反映されていません。</p>`;
+  document.getElementById("again").onclick=start;
+}
+
+renderStart();
+</script>
+</body>
+</html>
